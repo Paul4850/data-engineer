@@ -22,8 +22,9 @@ class BasketPreprocessor (BaseEstimator, TransformerMixin):
         """Apply the transforms to the dataframe."""
 
         baskets = X.copy()
-        baskets =  baskets.dropna(axis = 1, thresh= len(baskets.index) * 0.01)
+        #baskets =  baskets.dropna(axis = 1, thresh= len(baskets.index) * 0.01)
         baskets = baskets.dropna(axis = 0, thresh= 1)
+        baskets = baskets.fillna(0)
         return baskets
 
 class CategoricalImputer(BaseEstimator, TransformerMixin):

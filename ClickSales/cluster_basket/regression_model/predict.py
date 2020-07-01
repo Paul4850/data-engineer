@@ -15,7 +15,7 @@ import typing as t
 _logger = logging.getLogger(__name__)
 
 pipeline_file_name = f'{config.PIPELINE_SAVE_FILE}{_version}.pkl'
-_price_pipe = load_pipeline(file_name=pipeline_file_name)
+_basket_pipe = load_pipeline(file_name=pipeline_file_name)
 
 
 def make_prediction():
@@ -28,21 +28,31 @@ def make_prediction():
         Predictions for each input row, as well as the model version.
     """
    #test_data = /srv/ftp/Qlik/ProductCategoryBasket.csv
-    test_data = load_dataset(file_name='test.csv')
+    #test_data = load_dataset(file_name='test.csv')
+    data = load_dataset(file_name='ProductCategoryBasket.csv')
+    data =  data.pivot_table('Quantity', ['TransactionId', 'StoreId'], 'MerchandiseId')
+    data = pd.DataFrame(data.to_records())
 
+#data = load_dataset(file_name=config.TRAINING_DATA_FILE)
+    baskets = data.copy()
+    #baskets =  baskets.dropna(axis = 1, thresh= len(baskets.index) * 0.01)
+    baskets = baskets.iloc[:, 2:len(baskets.columns)+2]
+    baskets = baskets.dropna(axis = 0, thresh= 1)
+    baskets = baskets.fillna(0)
 
-    data = pd.DataFrame(test_data)
-    validated_data = validate_inputs(input_data=data)
+    #data = pd.DataFrame(test_data)
+    #validated_data = validate_inputs(input_data=data)
 
-    prediction = _price_pipe.predict(validated_data[config.FEATURES])
+    prediction = _basket_pipe.predict(baskets)
 
-    output = np.exp(prediction)
+    output = prediction
+    #np.exp(prediction)
 
     results = {'predictions': output, 'version': _version}
 
     _logger.info(
         f'Making predictions with model version: {_version} '
-        f'Inputs: {validated_data} '
+        f'Inputs: {baskets} '
         f'Predictions: {results}')
 
     return results

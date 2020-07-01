@@ -13,10 +13,11 @@ import logging
 _logger = logging.getLogger(__name__)
 
 basket_pipe = Pipeline(
-
-    ('BasketPreprocessor', pp.BasketPreprocessor()),
-    ('scaler', MinMaxScaler()),
-    ('BasketPreprocessor', KMeans(n_clusters=7, random_state=1)),
+    [
+        ('BasketPreprocessor', pp.BasketPreprocessor()),
+        ('scaler', MinMaxScaler()),
+        ('KMeans', KMeans(n_clusters=7, random_state=1))
+    ]
 )
 
 

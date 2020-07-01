@@ -16,7 +16,7 @@ DATASET_DIR = PACKAGE_ROOT / 'datasets'
 
 # data
 TESTING_DATA_FILE = 'test.csv'
-TRAINING_DATA_FILE = 'train.csv'
+TRAINING_DATA_FILE = 'ProductCategoryBasket.csv'
 TARGET = 'SalePrice'
 
 
