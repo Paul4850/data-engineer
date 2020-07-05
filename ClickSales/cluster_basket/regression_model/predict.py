@@ -7,16 +7,33 @@ from regression_model.processing.validation import validate_inputs
 from regression_model.processing.data_management import load_dataset
 from regression_model import __version__ as _version
 from regression_model import pipeline
+from pandas.io.json import json_normalize
 
 import logging
 import typing as t
 
+def convert_input(jsonData) -> dict:
+    #res = pd.read_json(jsonData, orient='records')
+    res = pd.DataFrame(jsonData)
+    print(res.shape)
+    return res
 
 _logger = logging.getLogger(__name__)
 
 pipeline_file_name = f'{config.PIPELINE_SAVE_FILE}{_version}.pkl'
 _basket_pipe = load_pipeline(file_name=pipeline_file_name)
 
+#input example
+#{""StoreId"":150,""TransactionId"":2,""MerchandiseId"":300062,""Quantity"":2},
+# {""StoreId"":150,""TransactionId"":2,""MerchandiseId"":500811,""Quantity"":1}
+
+def make_predict(input_data:t.Union[pd.DataFrame, dict],
+                 ) -> dict:
+    data = pd.DataFrame(input_data)
+    print(input_data.shape)
+    prediction = _basket_pipe.predict(data)
+    results = {'predictions': prediction, 'version': _version}
+    return results
 
 def make_prediction():
     """Make a prediction using a saved model pipeline.
