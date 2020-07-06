@@ -29,6 +29,10 @@ def run_training() -> None:
   #      data[config.TARGET],
    #     test_size=0.1,
     #    random_state=0)  # we are setting the seed here
+
+    BASKET_FEATURES = [100010, 100015, 100016, 100017, 100018, 300062, 500811,
+                       500812, 500813, 500814, 500815, 500816, 500818, 500819,
+                       500821, 500822, 500823, 500825]
     print('debug')
     print(data.shape)
     data =  data.pivot_table('Quantity', ['TransactionId', 'StoreId'], 'MerchandiseId')
@@ -38,6 +42,10 @@ def run_training() -> None:
     print(data.shape)
     X_train = data.iloc[:, 2:len(data.columns)+2]
     print(X_train.shape)
+    featDf = pd.DataFrame(columns=BASKET_FEATURES)
+    X_train = pd.merge(X_train, featDf, how='left')
+    X_train = X_train[BASKET_FEATURES]
+
     pipeline.basket_pipe.fit(X_train )
     #pipeline.price_pipe.fit(X_train )
     result = pipeline.basket_pipe.predict(X_train)

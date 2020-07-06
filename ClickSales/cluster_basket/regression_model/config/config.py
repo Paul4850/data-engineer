@@ -31,6 +31,10 @@ FEATURES = ['MSSubClass', 'MSZoning', 'Neighborhood',
             # this one is only to calculate temporal variable:
             'YrSold']
 
+BASKET_FEATURES = [100010, 100015, 100016, 100017, 100018, 300062, 500811,
+                   500812, 500813, 500814, 500815, 500816, 500818, 500819,
+                   500821, 500822, 500823, 500825]
+
 # this variable is to calculate the temporal variable,
 # can be dropped afterwards
 DROP_FEATURES = 'YrSold'

@@ -18,10 +18,45 @@ def convert_input(jsonData) -> dict:
     print(res.shape)
     return res
 
+
 _logger = logging.getLogger(__name__)
 
 pipeline_file_name = f'{config.PIPELINE_SAVE_FILE}{_version}.pkl'
 _basket_pipe = load_pipeline(file_name=pipeline_file_name)
+
+BASKET_FEATURES = [100010, 100015, 100016, 100017, 100018,
+                   300057, 300058, 300060, 300061, 300062,
+                   300064, 300065, 300570, 300640, 500811,
+                   500812, 500813, 500814, 500815, 500816,
+                   500818, 500819, 500821, 500822, 500823,
+                   500825, 500827]
+
+def make_predict2(input_data:t.Union[pd.DataFrame, dict],
+                 ) -> dict:
+
+    x_raw = pd.DataFrame(input_data)
+
+    xx  = x_raw.pivot_table('Quantity', ['TransactionId', 'StoreId'], 'MerchandiseId')
+    xx_index = xx.index
+
+    all_features = list(set(BASKET_FEATURES + list(xx.columns)))
+
+    featDf = pd.DataFrame(columns=all_features)
+
+    xx = pd.merge(xx, featDf, how='left')
+    xx = xx[BASKET_FEATURES]
+
+    xx = xx.fillna(0)
+
+    prediction = _basket_pipe.predict(xx)
+
+    rr = _basket_pipe.predict(xx)
+    predicts = pd.DataFrame(data=rr, index=xx_index, columns=['ClusterId'])
+    predicts = predicts.reset_index()
+    predicts = predicts.to_json(orient='records')
+    results = {'predictions': predicts, 'version': _version}
+
+    return predicts
 
 #input example
 #{""StoreId"":150,""TransactionId"":2,""MerchandiseId"":300062,""Quantity"":2},
