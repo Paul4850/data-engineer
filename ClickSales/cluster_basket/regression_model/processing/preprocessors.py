@@ -3,7 +3,29 @@ import pandas as pd
 from sklearn.base import BaseEstimator, TransformerMixin
 
 from regression_model.processing.errors import InvalidModelInputError
-#chw
+
+class BasketPreprocessor (BaseEstimator, TransformerMixin):
+
+    def __init__(self, variables=None) -> None:
+        if not isinstance(variables, list):
+            self.variables = [variables]
+        else:
+            self.variables = variables
+
+    def fit(self, X: pd.DataFrame, y: pd.Series = None
+            ) -> 'BasketPreprocessor':
+        """Fit statement to accomodate the sklearn pipeline."""
+
+        return self
+
+    def transform(self, X: pd.DataFrame) -> pd.DataFrame:
+        """Apply the transforms to the dataframe."""
+
+        baskets = X.copy()
+        #baskets =  baskets.dropna(axis = 1, thresh= len(baskets.index) * 0.01)
+        baskets = baskets.dropna(axis = 0, thresh= 1)
+        baskets = baskets.fillna(0)
+        return baskets
 
 class CategoricalImputer(BaseEstimator, TransformerMixin):
     """Categorical data missing value imputer."""
