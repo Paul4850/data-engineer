@@ -3,6 +3,16 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+#Qlik 
+*.qvd
+*.qvf
+*.qvw
+*.log
+*.index
+
+#windows Installer files
+
+
 # C extensions
 *.so
 
